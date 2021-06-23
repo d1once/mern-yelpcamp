@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 const CampgroundsEdit = ({ match }) => {
   const id = match.params.id;
   const history = useHistory();
-  const [campground, setCampground] = useState({});
+  const [campgrounds, setCampgrounds] = useState({});
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   useEffect(() => {
@@ -14,21 +14,23 @@ const CampgroundsEdit = ({ match }) => {
       const { data } = await axios.get(
         `http://localhost:5000/campgrounds/${id}`
       );
-      setCampground(data);
+      setCampgrounds(data);
       setTitle(data.title);
       setLocation(data.location);
     };
     fetchCampground();
   }, []);
-  const editedCampground = {
+  const campground = {
     title,
     location,
   };
 
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
-    console.log(editedCampground);
-    axios.put(`http://localhost:5000/campgrounds/${id}`, editedCampground);
+    console.log(campground);
+    await axios.put(`http://localhost:5000/campgrounds/${id}`, {
+      campground,
+    });
     history.push(`/campgrounds`);
   };
   return (

@@ -39,17 +39,29 @@ app.get("/campgrounds/:id", async (req, res) => {
 });
 
 app.put("/campgrounds/:id", async (req, res) => {
-  const { id } = req.params;
-  const campground = await Campground.findByIdAndUpdate(id, {
-    ...req.body.campground,
-  });
-  await campground.save();
+  try {
+    const { id } = req.params;
+    const campground = await Campground.findByIdAndUpdate(id, {
+      ...req.body.campground,
+    });
+    res.send(campground);
+    console.log(campground);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.delete("/campgrounds/:id", async (req, res) => {
-  const { id } = req.params;
-  await Campground.findByIdAndDelete(id);
-  res.send(`Campground with id: ${id} was deleted`);
+  try {
+    const { id } = req.params;
+    const deletedCampground = await Campground.findByIdAndDelete(id);
+    if (!deletedCampground) {
+      res.status(400);
+    }
+    res.status(200);
+  } catch (error) {
+    res.status(400);
+  }
 });
 
 app.listen(5000, () => {

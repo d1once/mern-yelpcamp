@@ -10,7 +10,7 @@ const Campgrounds = () => {
       setCampgrounds(data);
     };
     fetchCampgrounds();
-  }, []);
+  }, [campgrounds]);
   return (
     <div>
       {campgrounds.map((campground) => (
