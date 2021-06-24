@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
-import { Form, Button } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Card,
+  ListGroup,
+  ListGroupItem,
+} from "react-bootstrap";
 
 const CampgroundShow = ({ match }) => {
   const history = useHistory();
@@ -23,16 +31,38 @@ const CampgroundShow = ({ match }) => {
     history.push("/campgrounds");
   };
   return (
-    <div>
-      <h1>{campground?.title}</h1>
-      <h2>{campground?.location}</h2>
-      <Link to={`/campgrounds/${campground?._id}/edit`}>Edit Campground</Link>
-      <Form>
-        <Button variant="danger" onClick={handleDelete}>
-          Delete
-        </Button>
-      </Form>
-    </div>
+    <>
+      <Row>
+        <Col md={6} className="mx-auto">
+          <Card className="mb-5">
+            <Card.Img variant="top" src={campground.image} />
+            <Card.Body>
+              <Card.Title>{campground.title}</Card.Title>
+              <Card.Text>{campground.description}</Card.Text>
+            </Card.Body>
+            <ListGroup className="list-group-flush">
+              <ListGroupItem className="text-muted">
+                {campground.location}
+              </ListGroupItem>
+              <ListGroupItem>${campground.price}/night</ListGroupItem>
+            </ListGroup>
+            <Card.Body>
+              <Link
+                to={`/campgrounds/${campground._id}/edit`}
+                className="btn btn-info mx-3"
+              >
+                Edit
+              </Link>
+              <Form className="d-inline">
+                <Button variant="danger" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </>
   );
 };
 
