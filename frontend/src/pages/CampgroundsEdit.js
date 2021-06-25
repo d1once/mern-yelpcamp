@@ -17,6 +17,9 @@ const CampgroundsEdit = ({ match }) => {
   const [campgrounds, setCampgrounds] = useState({});
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [image, setImage] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   useEffect(() => {
     const fetchCampground = async () => {
       const { data } = await axios.get(
@@ -24,6 +27,9 @@ const CampgroundsEdit = ({ match }) => {
       );
       setCampgrounds(data);
       setTitle(data.title);
+      setImage(data.image);
+      setPrice(data.price);
+      setDescription(data.description);
       setLocation(data.location);
     };
     fetchCampground();
@@ -31,6 +37,9 @@ const CampgroundsEdit = ({ match }) => {
   const campground = {
     title,
     location,
+    image,
+    price,
+    description,
   };
 
   const handleEdit = async (e) => {
@@ -39,7 +48,7 @@ const CampgroundsEdit = ({ match }) => {
     await axios.put(`http://localhost:5000/campgrounds/${id}`, {
       campground,
     });
-    history.push(`/campgrounds`);
+    history.push(`/campgrounds/${id}`);
   };
   return (
     <Container>
@@ -66,9 +75,14 @@ const CampgroundsEdit = ({ match }) => {
                 onChange={(e) => setLocation(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicLocation">
+            <Form.Group className="mb-3" controlId="formBasicImage">
               <Form.Label>Image :</Form.Label>
-              <Form.Control type="text" placeholder="Enter Campground Image" />
+              <Form.Control
+                type="text"
+                placeholder="Enter Campground Image"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              />
             </Form.Group>
             <div className="mb-3">
               <Form.Label>Price :</Form.Label>
@@ -78,6 +92,8 @@ const CampgroundsEdit = ({ match }) => {
                   placeholder="Price"
                   aria-label="Price"
                   aria-describedby="price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
                 />
               </InputGroup>
             </div>
@@ -87,9 +103,16 @@ const CampgroundsEdit = ({ match }) => {
                 as="textarea"
                 placeholder="Update your description here"
                 style={{ height: "100px" }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="mb-3">
+            <Button
+              variant="primary"
+              type="submit"
+              className="mb-3"
+              onClick={handleEdit}
+            >
               Submit
             </Button>
           </Form>

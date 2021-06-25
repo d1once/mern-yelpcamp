@@ -14,18 +14,22 @@ import { useHistory } from "react-router-dom";
 const CampgroundsNew = () => {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [image, setImage] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const history = useHistory();
 
   const campground = {
     title,
     location,
+    image,
+    price,
+    description,
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:5000/campgrounds", { campground });
-    setTitle("");
-    setLocation("");
+    axios.post("http://localhost:5000/campgrounds", { campground });
     history.push("/campgrounds");
   };
 
@@ -54,9 +58,14 @@ const CampgroundsNew = () => {
                 onChange={(e) => setLocation(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicLocation">
+            <Form.Group className="mb-3" controlId="formBasicImage">
               <Form.Label>Image :</Form.Label>
-              <Form.Control type="text" placeholder="Enter Campground Image" />
+              <Form.Control
+                type="text"
+                placeholder="Enter Campground Image"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              />
             </Form.Group>
             <div className="mb-3">
               <Form.Label>Price :</Form.Label>
@@ -66,6 +75,8 @@ const CampgroundsNew = () => {
                   placeholder="Price"
                   aria-label="Price"
                   aria-describedby="price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
                 />
               </InputGroup>
             </div>
@@ -75,6 +86,8 @@ const CampgroundsNew = () => {
                 as="textarea"
                 placeholder="Leave a description here"
                 style={{ height: "100px" }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </Form.Group>
             <Button

@@ -1,5 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { campgroundSchema } = require("./schemas.js");
+const catchAsync = require("./utils/catchAsync");
+const ExpressError = require("./utils/ExpressError");
 const cors = require("cors");
 const Campground = require("./models/campground");
 
@@ -20,49 +23,88 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const validateCampground = (req, res, next) => {
+  const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
 app.get("/", (req, res) => {
   res.send("home");
 });
-app.get("/campgrounds", async (req, res) => {
-  const campgrounds = await Campground.find({});
-  res.json(campgrounds);
-});
 
-app.post("/campgrounds", async (req, res) => {
-  const campground = new Campground(req.body.campground);
-  await campground.save();
-});
-
-app.get("/campgrounds/:id", async (req, res) => {
-  const campground = await Campground.findById(req.params.id);
-  res.json(campground);
-});
-
-app.put("/campgrounds/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {
-      ...req.body.campground,
-    });
-    res.send(campground);
-    console.log(campground);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.delete("/campgrounds/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedCampground = await Campground.findByIdAndDelete(id);
-    if (!deletedCampground) {
-      res.status(400);
+app.get(
+  "/campgrounds",
+  catchAsync(async (req, res) => {
+    try {
+      const campgrounds = await Campground.find({});
+      res.json(campgrounds);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-    res.status(200);
-  } catch (error) {
-    res.status(400);
-  }
-});
+  })
+);
+
+app.post(
+  "/campgrounds",
+  validateCampground,
+  catchAsync(async (req, res) => {
+    try {
+      const campground = new Campground(req.body.campground);
+      await campground.save();
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  })
+);
+
+app.get(
+  "/campgrounds/:id",
+  catchAsync(async (req, res) => {
+    try {
+      const campground = await Campground.findById(req.params.id);
+      res.json(campground);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  })
+);
+
+app.put(
+  "/campgrounds/:id",
+  validateCampground,
+  catchAsync(async (req, res) => {
+    try {
+      const { id } = req.params;
+      const campground = await Campground.findByIdAndUpdate(id, {
+        ...req.body.campground,
+      });
+      res.send(campground);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  })
+);
+
+app.delete(
+  "/campgrounds/:id",
+  catchAsync(async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deletedCampground = await Campground.findByIdAndDelete(id);
+      if (!deletedCampground) {
+        res.status(400);
+      }
+      res.status(200);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  })
+);
 
 app.listen(5000, () => {
   console.log("Serving on port 5000");
