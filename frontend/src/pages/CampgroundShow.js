@@ -10,7 +10,7 @@ import {
   ListGroup,
   ListGroupItem,
 } from "react-bootstrap";
-
+import ReactStars from "react-rating-stars-component";
 const CampgroundShow = ({ match }) => {
   const history = useHistory();
   const id = match.params.id;
@@ -33,7 +33,7 @@ const CampgroundShow = ({ match }) => {
   return (
     <>
       <Row>
-        <Col md={6} className="mx-auto">
+        <Col md={6}>
           <Card className="mb-5">
             <Card.Img variant="top" src={campground.image} />
             <Card.Body>
@@ -60,6 +60,41 @@ const CampgroundShow = ({ match }) => {
               </Form>
             </Card.Body>
           </Card>
+        </Col>
+        <Col md={6}>
+          <>
+            <Form className="mb-3">
+              <div className="mb-3 d-flex flex-column">
+                <Form.Label>Rating :</Form.Label>
+                <ReactStars
+                  count={5}
+                  activeColor="yellow"
+                  size="35"
+                  value={3}
+                />
+              </div>
+              <div className="mb-3">
+                <Form.Group className="mb-3">
+                  <Form.Label>Description :</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Leave a review here"
+                    style={{ height: "100px" }}
+                  />
+                </Form.Group>
+              </div>
+              <Button variant="primary">Submit</Button>
+            </Form>
+            {campground?.reviews.map((review) => {
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Title>{review.rating}</Card.Title>
+                  <Card.Text>{review.body}</Card.Text>
+                </Card.Body>
+              </Card>;
+            })}
+          </>
+          <h1>Hello</h1>
         </Col>
       </Row>
     </>
