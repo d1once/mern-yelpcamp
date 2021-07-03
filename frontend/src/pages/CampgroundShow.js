@@ -85,7 +85,7 @@ const CampgroundShow = ({ match }) => {
               </div>
               <Button variant="primary">Submit</Button>
             </Form>
-            {campground?.reviews.map((review) => {
+            {campground.reviews?.map((review) => {
               <Card className="mb-3">
                 <Card.Body>
                   <Card.Title>{review.rating}</Card.Title>
